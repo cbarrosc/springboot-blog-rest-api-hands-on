@@ -1,13 +1,13 @@
 package com.springboot.blog.controller;
 
 import com.springboot.blog.payload.PostDto;
+import com.springboot.blog.payload.PostResponse;
 import com.springboot.blog.service.PostService;
+import com.springboot.blog.utils.AppConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -30,13 +30,16 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(postService.createPost(postDto));
     }
 
-    //Get all blog posts
+    //Get all blog posts providing pagination and sorting
     /* Example request:
-     http GET http://localhost:8080/api/posts
+     http GET http://localhost:8080/api/posts?page=0&size=10&sort-by=title&sort-dir=asc
      */
     @GetMapping
-    public List<PostDto> getAllPosts(){
-        return postService.getAllPosts();
+    public PostResponse getAllPosts(@RequestParam(name = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+                                    @RequestParam(name = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+                                    @RequestParam(name = "sort-by", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+                                    @RequestParam(name = "sort-dir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir){
+        return postService.getAllPosts(pageNo, pageSize, sortBy, sortDir);
     }
 
     //Get blog post by id
