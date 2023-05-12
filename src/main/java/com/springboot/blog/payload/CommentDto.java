@@ -1,12 +1,15 @@
 package com.springboot.blog.payload;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Builder
-public record CommentDto(
-        Long id,
-        String name,
-        String email,
-        String body
-) {
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+public final class CommentDto {
+    private Long id;
+    private String name;
+    private String email;
+    private String body;
 }

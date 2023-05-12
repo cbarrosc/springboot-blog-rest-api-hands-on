@@ -7,6 +7,7 @@ import com.springboot.blog.payload.PostResponse;
 import com.springboot.blog.repository.PostRepository;
 import com.springboot.blog.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,8 @@ import java.util.List;
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
+    private final ModelMapper mapper;
+
     @Override
     public PostDto createPost(PostDto postDto) {
         Post post = postRepository.save(mapToEntity(postDto));
@@ -63,9 +66,9 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
 
         //Set new values
-        post.setTitle(postDto.title());
-        post.setDescription(postDto.description());
-        post.setContent(postDto.content());
+        post.setTitle(postDto.getTitle());
+        post.setDescription(postDto.getDescription());
+        post.setContent(postDto.getContent());
 
         Post updatedPost = postRepository.save(post);
         return mapToDTO(updatedPost);
@@ -79,20 +82,11 @@ public class PostServiceImpl implements PostService {
 
     //convert Entity to DTO
     private PostDto mapToDTO(Post post) {
-        return PostDto.builder()
-                .id(post.getId())
-                .title(post.getTitle())
-                .description(post.getDescription())
-                .content(post.getContent())
-                .build();
+        return mapper.map(post, PostDto.class);
     }
 
     //convert DTO to Entity
     private Post mapToEntity(PostDto postDto) {
-        return Post.builder()
-                .title(postDto.title())
-                .description(postDto.description())
-                .content(postDto.content())
-                .build();
+        return mapper.map(postDto, Post.class);
     }
 }

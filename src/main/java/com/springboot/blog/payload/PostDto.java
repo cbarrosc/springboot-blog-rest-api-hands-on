@@ -1,12 +1,19 @@
 package com.springboot.blog.payload;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Builder
-public record PostDto(
-        long id,
-        String title,
-        String description,
-        String content
-) {
+import java.util.Set;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+public final class PostDto {
+    private long id;
+    private String title;
+    private String description;
+    private String content;
+    private Set<CommentDto> comments;
+
 }

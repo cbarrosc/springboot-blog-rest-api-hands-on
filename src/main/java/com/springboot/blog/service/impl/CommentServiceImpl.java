@@ -9,6 +9,7 @@ import com.springboot.blog.repository.CommentRepository;
 import com.springboot.blog.repository.PostRepository;
 import com.springboot.blog.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
+    private final ModelMapper mapper;
 
     @Override
     public CommentDto createComment(long postId, CommentDto commentDto) {
@@ -53,9 +55,9 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentDto updateComment(long postId, long commentId, CommentDto commentDto) {
         Comment comment = getComment(postId, commentId);
-        comment.setName(commentDto.name());
-        comment.setEmail(commentDto.email());
-        comment.setBody(commentDto.body());
+        comment.setName(commentDto.getName());
+        comment.setEmail(commentDto.getEmail());
+        comment.setBody(commentDto.getBody());
 
         //save to database and return updated comment
         return mapToDto(commentRepository.save(comment));
@@ -69,21 +71,11 @@ public class CommentServiceImpl implements CommentService {
 
 
     private CommentDto mapToDto(Comment comment) {
-        return CommentDto.builder()
-                .id(comment.getId())
-                .name(comment.getName())
-                .email(comment.getEmail())
-                .body(comment.getBody())
-                .build();
+        return mapper.map(comment, CommentDto.class);
     }
 
     private Comment mapToEntity(CommentDto commentDto) {
-        return Comment.builder()
-                .id(commentDto.id())
-                .name(commentDto.name())
-                .email(commentDto.email())
-                .body(commentDto.body())
-                .build();
+        return mapper.map(commentDto, Comment.class);
     }
 
     private Comment getComment(long postId, long commentId) {
