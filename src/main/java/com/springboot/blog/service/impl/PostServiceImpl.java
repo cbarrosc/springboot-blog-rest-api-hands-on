@@ -22,7 +22,7 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     @Override
     public PostDto createPost(PostDto postDto) {
-        Post post = postRepository.save(getBuild(postDto));
+        Post post = postRepository.save(mapToEntity(postDto));
         return mapToDTO(post);
     }
 
@@ -73,7 +73,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deletePostById(Long id) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+        postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
         postRepository.deleteById(id);
     }
 
@@ -88,7 +88,7 @@ public class PostServiceImpl implements PostService {
     }
 
     //convert DTO to Entity
-    private Post getBuild(PostDto postDto) {
+    private Post mapToEntity(PostDto postDto) {
         return Post.builder()
                 .title(postDto.title())
                 .description(postDto.description())
